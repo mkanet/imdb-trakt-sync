@@ -730,6 +730,9 @@ func idExtract(href string) (string, error) {
 }
 
 func buildSelector(ids ...string) string {
+	if len(ids) == 0 {
+		return `() => []`
+	}
 	var selectors strings.Builder
 	for i, id := range ids {
 		selectors.WriteString(fmt.Sprintf(`a.ipc-metadata-list-summary-item__t[href*='%s']`, id))
@@ -737,7 +740,6 @@ func buildSelector(ids ...string) string {
 			selectors.WriteString(",")
 		}
 	}
-	// () => [...document.querySelectorAll("a.ipc-metadata-list-summary-item__t[href*='ls123456789'],a.ipc-metadata-list-summary-item__t[href*='ls987654321']")].map(el => el.closest('li'));
 	format := `() => [...document.querySelectorAll("%s")].map(hyperlink => hyperlink.closest("li"));`
 	return fmt.Sprintf(format, selectors.String())
 }
